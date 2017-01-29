@@ -1,10 +1,13 @@
 package com.niks.locationhelper.places.model;
 
+import java.io.Serializable;
+
 /**
  * Created by niks
  */
 
-public class PlacePrediction {
+public class PlacePrediction implements Serializable{
+    private static final long serialVersionUID = 4458531217616869407L;
     private String id,description,place_id,reference;
 
     public String getId() {
