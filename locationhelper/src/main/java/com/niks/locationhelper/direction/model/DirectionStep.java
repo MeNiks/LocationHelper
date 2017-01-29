@@ -4,7 +4,9 @@ package com.niks.locationhelper.direction.model;
 import android.location.Location;
 
 import com.niks.baseutils.model.KeyValueModel;
-
+/**
+ * Created by niks
+ */
 public class DirectionStep {
     private KeyValueModel distance_text,distance_value,polyline;
     private KeyValueModel duration_text,duration_value;

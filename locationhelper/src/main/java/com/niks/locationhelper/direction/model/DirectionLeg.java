@@ -6,7 +6,9 @@ import android.location.Location;
 import com.niks.baseutils.model.KeyValueModel;
 
 import java.util.ArrayList;
-
+/**
+ * Created by niks
+ */
 public class DirectionLeg {
     private KeyValueModel distance_text,distance_value;
     private KeyValueModel duration_text,duration_value;
