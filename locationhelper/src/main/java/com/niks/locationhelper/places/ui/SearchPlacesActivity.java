@@ -2,6 +2,7 @@ package com.niks.locationhelper.places.ui;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -10,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
@@ -142,6 +145,14 @@ public class SearchPlacesActivity extends BaseAppCompatActivity {
                 returnIntent.putExtra("failure", getString(R.string.msg_provide_server_key));
                 setResult(RESULT_OK, returnIntent);
                 finish();
+            }
+
+            if(intent.hasExtra("dark_actionbar_color")){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Window window = getWindow();
+                    window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+                    window.setStatusBarColor(Color.parseColor(intent.getStringExtra("dark_actionbar_color")));
+                }
             }
         }
     }

@@ -73,6 +73,7 @@ public class MainActivity extends BaseAppCompatActivity {
     public void searchPlaces(View view) {
         Intent intent = new Intent(MainActivity.this, SearchPlacesActivity.class);
         intent.putExtra("title","Search Location");
+        intent.putExtra("dark_actionbar_color","#FF0000");
         intent.putExtra("api_key",API_KEY);
         startActivityForResult(intent, 401);
     }
