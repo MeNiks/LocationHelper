@@ -5,6 +5,7 @@ import android.os.AsyncTask;
 import android.text.TextUtils;
 
 import com.niks.baseutils.JsonValuesUtils;
+import com.niks.locationhelper.R;
 import com.niks.locationhelper.places.model.PlacePrediction;
 import com.niks.net.callback.OperationCallback;
 import com.niks.net.model.ResultModel;
@@ -45,22 +46,48 @@ public class PlacesAPI {
     /*
     * Server Api key
     * */
-    public void getPlacesList(final OperationCallback operationCallback, String api_key) {
+    public void getPlacesList(final Context context,final OperationCallback operationCallback, String api_key) {
         if (TextUtils.isEmpty(place_name)) {
-            operationCallback.onFailed("Please provide location to search", null);
+            operationCallback.onFailed(context.getString(R.string.msg_provide_place_name), null);
             return;
         }
 
         if (TextUtils.isEmpty(place_type)) {
-            operationCallback.onFailed("Please provide place type", null);
+            operationCallback.onFailed(context.getString(R.string.msg_provide_places_type), null);
             return;
         }
 
         if (TextUtils.isEmpty(api_key)) {
-            operationCallback.onFailed("Please provide api key", null);
+            operationCallback.onFailed(context.getString(R.string.msg_provide_server_key), null);
             return;
         }
-        new CallAPI(operationCallback).execute(api_key);
+
+        String url = PLACES_API_URL + place_name + "&types=" + place_type + "&language=en&key=" + api_key;
+        httpURLConnectionRequester.sendHttpURLConnectionRequest("GET", url, null, null, "", new OperationCallback() {
+            @Override
+            public void onSuccess(Object parameter1, Object parameter2) {
+                try {
+                    ResultModel resultModel = (ResultModel) parameter1;
+                    ArrayList<PlacePrediction> test = getPlacesListModels(resultModel.getResponse());
+                    operationCallback.onSuccess(test, null);
+                } catch (Exception e) {
+                    operationCallback.onFailed(context.getString(R.string.places_api_failed), null);
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailed(Object parameter1, Object parameter2) {
+                try {
+//                    ResultModel resultModel = (ResultModel) parameter1;
+                    operationCallback.onFailed(parameter1, parameter2);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+//        new CallAPI(operationCallback).execute(api_key);
     }
 
     private ArrayList<PlacePrediction> getPlacesListModels(String json) {
@@ -100,30 +127,35 @@ public class PlacesAPI {
 
         @Override
         protected String doInBackground(String... params) {
-            String url = PLACES_API_URL + place_name + "&types=" + place_type + "&language=en&key=" + params[0];
-            httpURLConnectionRequester.sendHttpURLConnectionRequest("GET", url, null, null, "", new OperationCallback() {
-                @Override
-                public void onSuccess(Object parameter1, Object parameter2) {
-                    try {
-                        ResultModel resultModel = (ResultModel) parameter1;
-                        ArrayList<PlacePrediction> test = getPlacesListModels(resultModel.getResponse());
-                        operationCallback.onSuccess(test, null);
-                    } catch (Exception e) {
-                        operationCallback.onFailed(null, null);
-                        e.printStackTrace();
+            try {
+                String url = PLACES_API_URL + place_name + "&types=" + place_type + "&language=en&key=" + params[0];
+                httpURLConnectionRequester.sendHttpURLConnectionRequest("GET", url, null, null, "", new OperationCallback() {
+                    @Override
+                    public void onSuccess(Object parameter1, Object parameter2) {
+                        try {
+                            ResultModel resultModel = (ResultModel) parameter1;
+                            ArrayList<PlacePrediction> test = getPlacesListModels(resultModel.getResponse());
+                            operationCallback.onSuccess(test, null);
+                        } catch (Exception e) {
+                            operationCallback.onFailed(null, null);
+                            e.printStackTrace();
+                        }
                     }
-                }
 
-                @Override
-                public void onFailed(Object parameter1, Object parameter2) {
-                    try {
-//                    ResultModel resultModel = (ResultModel) parameter1;
-                        operationCallback.onFailed(null, null);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    @Override
+                    public void onFailed(Object parameter1, Object parameter2) {
+                        try {
+    //                    ResultModel resultModel = (ResultModel) parameter1;
+                            operationCallback.onFailed(null, null);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-            });
+                });
+            } catch (Exception e) {
+                operationCallback.onFailed(null, null);
+                e.printStackTrace();
+            }
             return null;
         }
     }

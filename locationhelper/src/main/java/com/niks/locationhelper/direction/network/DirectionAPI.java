@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 
 import com.niks.baseutils.JsonValuesUtils;
 import com.niks.baseutils.model.KeyValueModel;
+import com.niks.locationhelper.R;
 import com.niks.locationhelper.direction.model.DirectionLeg;
 import com.niks.locationhelper.direction.model.DirectionRoute;
 import com.niks.locationhelper.direction.model.DirectionStep;
@@ -46,7 +47,13 @@ public class DirectionAPI {
         this.destination_longitude = destination_longitude;
     }
 
-    public void getDirectionList(final OperationCallback operationCallback) {
+    public void getDirectionList(final Context context, final OperationCallback operationCallback) {
+
+        if (context == null) {
+            operationCallback.onFailed("Context may not be null", null);
+            return;
+        }
+
         if (origin_latitude == -1) {
             operationCallback.onFailed("Set origin latitude", null);
             return;
@@ -64,7 +71,32 @@ public class DirectionAPI {
             operationCallback.onFailed("Set destination longitude", null);
             return;
         }
-        new CallDirectionAPI(operationCallback).execute();
+//        new CallDirectionAPI(operationCallback).execute();
+
+        String url = DIRECTION_API_URL + origin_latitude + "," + origin_longitude + "&destination=" + destination_latitude + "," + destination_longitude + "&sensor=false";
+        httpURLConnectionRequester.sendHttpURLConnectionRequest("GET", url, null, null, "", new OperationCallback() {
+            @Override
+            public void onSuccess(Object parameter1, Object parameter2) {
+                try {
+                    ResultModel resultModel = (ResultModel) parameter1;
+                    ArrayList<DirectionRoute> test = getDirectionListModels(resultModel.getResponse());
+                    operationCallback.onSuccess(test, null);
+                } catch (Exception e) {
+                    operationCallback.onFailed(context.getString(R.string.direction_api_failed), null);
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailed(Object parameter1, Object parameter2) {
+                try {
+//                    ResultModel resultModel = (ResultModel) parameter1;
+                    operationCallback.onFailed(parameter1, parameter2);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
 
     }
@@ -253,30 +285,35 @@ public class DirectionAPI {
 
         @Override
         protected String doInBackground(String... params) {
-            String url = DIRECTION_API_URL + origin_latitude + "," + origin_longitude + "&destination=" + destination_latitude + "," + destination_longitude + "&sensor=false";
-            httpURLConnectionRequester.sendHttpURLConnectionRequest("GET", url, null, null, "", new OperationCallback() {
-                @Override
-                public void onSuccess(Object parameter1, Object parameter2) {
-                    try {
-                        ResultModel resultModel = (ResultModel) parameter1;
-                        ArrayList<DirectionRoute> test = getDirectionListModels(resultModel.getResponse());
-                        operationCallback.onSuccess(test, null);
-                    } catch (Exception e) {
-                        operationCallback.onFailed(null, null);
-                        e.printStackTrace();
+            try {
+                String url = DIRECTION_API_URL + origin_latitude + "," + origin_longitude + "&destination=" + destination_latitude + "," + destination_longitude + "&sensor=false";
+                httpURLConnectionRequester.sendHttpURLConnectionRequest("GET", url, null, null, "", new OperationCallback() {
+                    @Override
+                    public void onSuccess(Object parameter1, Object parameter2) {
+                        try {
+                            ResultModel resultModel = (ResultModel) parameter1;
+                            ArrayList<DirectionRoute> test = getDirectionListModels(resultModel.getResponse());
+                            operationCallback.onSuccess(test, null);
+                        } catch (Exception e) {
+                            operationCallback.onFailed(null, null);
+                            e.printStackTrace();
+                        }
                     }
-                }
 
-                @Override
-                public void onFailed(Object parameter1, Object parameter2) {
-                    try {
-//                    ResultModel resultModel = (ResultModel) parameter1;
-                        operationCallback.onFailed(null, null);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                    @Override
+                    public void onFailed(Object parameter1, Object parameter2) {
+                        try {
+    //                    ResultModel resultModel = (ResultModel) parameter1;
+                            operationCallback.onFailed(null, null);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
-                }
-            });
+                });
+            } catch (Exception e) {
+                operationCallback.onFailed(null, null);
+                e.printStackTrace();
+            }
             return null;
         }
     }

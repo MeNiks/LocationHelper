@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Location Helper</string>
+    <string name="direction_api_failed">We are failed to get direction list from server.</string>
+    <string name="places_api_failed">We are failed to get places list from server.</string>
+    <string name="msg_provide_server_key">Please provide api key</string>
+    <string name="msg_provide_places_type">Please provide place type</string>
+    <string name="msg_provide_place_name">Please provide location to search</string>
 </resources>
