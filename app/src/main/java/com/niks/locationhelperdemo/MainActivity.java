@@ -56,6 +56,6 @@ public class MainActivity extends BaseAppCompatActivity {
                     }
                 }
             }
-        }, "AIzaSyBbw1LVaA7_x6g-ncqwCWgzw4ceJQfgyx0");
+        }, "PROVIDE_YOUR_SERVER_KEY_HERE");
     }
 }
