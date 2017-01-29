@@ -17,6 +17,7 @@ import com.niks.net.callback.OperationCallback;
 public class MainActivity extends BaseAppCompatActivity {
 
     private static final String API_KEY ="PROVIDE_API_KEY_HERE";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,29 +71,29 @@ public class MainActivity extends BaseAppCompatActivity {
             }
         }, API_KEY);
     }
+
     public void searchPlaces(View view) {
         Intent intent = new Intent(MainActivity.this, SearchPlacesActivity.class);
-        intent.putExtra("title","Search Location");
-        intent.putExtra("dark_actionbar_color","#FF0000");
-        intent.putExtra("api_key",API_KEY);
+        intent.putExtra(SearchPlacesActivity.TITLE, "Search Location");
+        intent.putExtra(SearchPlacesActivity.DARK_ACTIONBAR_COLOR, "#FF0000");
+        intent.putExtra(SearchPlacesActivity.API_KEY, API_KEY);
         startActivityForResult(intent, 401);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-         if(requestCode == 401){
-             if (data!=null) {
-                 Bundle bundle = data.getExtras();
-                 if(bundle!=null){
-                     if(bundle.containsKey("success")){
-                         PlacePrediction search_result= (PlacePrediction) bundle.getSerializable("success");
-                         myToast(search_result.getDescription());
-                     }
-                 }
-             }
-         }
+        if (requestCode == 401) {
+            if (data != null) {
+                Bundle bundle = data.getExtras();
+                if (bundle != null) {
+                    if (bundle.containsKey("success")) {
+                        PlacePrediction search_result = (PlacePrediction) bundle.getSerializable("success");
+                        myToast(search_result.getDescription());
+                    }
+                }
+            }
+        }
     }
-
 
 
 }

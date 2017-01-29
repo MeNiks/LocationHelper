@@ -33,8 +33,10 @@ public class SearchPlacesActivity extends BaseAppCompatActivity {
     private EditText et_search;
     private SearchPlacesAdapter searchPlacesAdapter;
     private TextView tv_reason;
-    private ImageView iv_search_places,iv_back;
+    private ImageView iv_search_places, iv_back;
     private String api_key;
+    public static final String TITLE = "TITLE", SUCCESS = "SUCCESS", FAILURE = "FAILURE",
+            API_KEY = "API_KEY", DARK_ACTIONBAR_COLOR = "DARK_ACTIONBAR_COLOR";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,18 +48,19 @@ public class SearchPlacesActivity extends BaseAppCompatActivity {
     }
 
     private void initializeIds() {
-        iv_back=(ImageView) findViewById(R.id.search_places_back_iv);
+        iv_back = (ImageView) findViewById(R.id.search_places_back_iv);
         iv_back.setColorFilter(Color.parseColor("#717171"));
-        iv_search_places=(ImageView) findViewById(R.id.search_places_iv);
+        iv_search_places = (ImageView) findViewById(R.id.search_places_iv);
         iv_search_places.setColorFilter(Color.parseColor("#717171"));
         tv_reason = (TextView) findViewById(R.id.search_places_empty_tv);
         listView = (ListView) findViewById(R.id.search_places_lv);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (searchPlacesAdapter != null && searchPlacesAdapter.list != null && searchPlacesAdapter.list.size() > 0) {
+                if (searchPlacesAdapter != null && searchPlacesAdapter.list != null
+                        && searchPlacesAdapter.list.size() > 0) {
                     Intent returnIntent = new Intent();
-                    returnIntent.putExtra("success", searchPlacesAdapter.list.get(position));
+                    returnIntent.putExtra(SUCCESS, searchPlacesAdapter.list.get(position));
                     setResult(RESULT_OK, returnIntent);
                     /*SearchPlacesActivity.this.*/
                     finish();
@@ -83,12 +86,12 @@ public class SearchPlacesActivity extends BaseAppCompatActivity {
                         public void onSuccess(Object response, Object o1) {
                             if (response instanceof ArrayList) {
                                 ArrayList<PlacePrediction> places_list = (ArrayList<PlacePrediction>) response;
-                                if (places_list.size()>0) {
+                                if (places_list.size() > 0) {
                                     searchPlacesAdapter = new SearchPlacesAdapter(places_list);
                                     listView.setAdapter(searchPlacesAdapter);
                                     listView.setVisibility(View.VISIBLE);
                                     tv_reason.setVisibility(View.GONE);
-                                }else{
+                                } else {
                                     tv_reason.setText(R.string.msg_no_location_found);
                                     listView.setVisibility(View.GONE);
                                     tv_reason.setVisibility(View.VISIBLE);
@@ -134,24 +137,24 @@ public class SearchPlacesActivity extends BaseAppCompatActivity {
 
     private void handleIntent(Intent intent) {
         if (intent != null) {
-            if (intent.hasExtra("title")) {
-                String title = intent.getStringExtra("title");
+            if (intent.hasExtra(TITLE)) {
+                String title = intent.getStringExtra(TITLE);
                 setTitle(title);
             }
-            if (intent.hasExtra("api_key")) {
-                api_key=intent.getStringExtra("api_key");
-            }else{
+            if (intent.hasExtra(API_KEY)) {
+                api_key = intent.getStringExtra(API_KEY);
+            } else {
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra("failure", getString(R.string.msg_provide_server_key));
+                returnIntent.putExtra(FAILURE, getString(R.string.msg_provide_server_key));
                 setResult(RESULT_OK, returnIntent);
                 finish();
             }
 
-            if(intent.hasExtra("dark_actionbar_color")){
+            if (intent.hasExtra(DARK_ACTIONBAR_COLOR)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     Window window = getWindow();
                     window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                    window.setStatusBarColor(Color.parseColor(intent.getStringExtra("dark_actionbar_color")));
+                    window.setStatusBarColor(Color.parseColor(intent.getStringExtra(DARK_ACTIONBAR_COLOR)));
                 }
             }
         }
