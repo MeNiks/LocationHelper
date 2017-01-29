@@ -74,7 +74,6 @@ public class MainActivity extends BaseAppCompatActivity {
 
     public void searchPlaces(View view) {
         Intent intent = new Intent(MainActivity.this, SearchPlacesActivity.class);
-        intent.putExtra(SearchPlacesActivity.TITLE, "Search Location");
         intent.putExtra(SearchPlacesActivity.DARK_ACTIONBAR_COLOR, "#FF0000");
         intent.putExtra(SearchPlacesActivity.API_KEY, API_KEY);
         startActivityForResult(intent, 401);
@@ -86,8 +85,8 @@ public class MainActivity extends BaseAppCompatActivity {
             if (data != null) {
                 Bundle bundle = data.getExtras();
                 if (bundle != null) {
-                    if (bundle.containsKey("success")) {
-                        PlacePrediction search_result = (PlacePrediction) bundle.getSerializable("success");
+                    if (bundle.containsKey(SearchPlacesActivity.SUCCESS)) {
+                        PlacePrediction search_result = (PlacePrediction) bundle.getSerializable(SearchPlacesActivity.SUCCESS);
                         myToast(search_result.getDescription());
                     }
                 }

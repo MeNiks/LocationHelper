@@ -8,7 +8,6 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -35,7 +34,7 @@ public class SearchPlacesActivity extends BaseAppCompatActivity {
     private TextView tv_reason;
     private ImageView iv_search_places, iv_back;
     private String api_key;
-    public static final String TITLE = "TITLE", SUCCESS = "SUCCESS", FAILURE = "FAILURE",
+    public static final String  SUCCESS = "SUCCESS", FAILURE = "FAILURE",
             API_KEY = "API_KEY", DARK_ACTIONBAR_COLOR = "DARK_ACTIONBAR_COLOR";
 
     @Override
@@ -50,6 +49,12 @@ public class SearchPlacesActivity extends BaseAppCompatActivity {
     private void initializeIds() {
         iv_back = (ImageView) findViewById(R.id.search_places_back_iv);
         iv_back.setColorFilter(Color.parseColor("#717171"));
+        iv_back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
         iv_search_places = (ImageView) findViewById(R.id.search_places_iv);
         iv_search_places.setColorFilter(Color.parseColor("#717171"));
         tv_reason = (TextView) findViewById(R.id.search_places_empty_tv);
@@ -125,22 +130,8 @@ public class SearchPlacesActivity extends BaseAppCompatActivity {
         });
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                break;
-        }
-        return true;
-    }
-
     private void handleIntent(Intent intent) {
         if (intent != null) {
-            if (intent.hasExtra(TITLE)) {
-                String title = intent.getStringExtra(TITLE);
-                setTitle(title);
-            }
             if (intent.hasExtra(API_KEY)) {
                 api_key = intent.getStringExtra(API_KEY);
             } else {
